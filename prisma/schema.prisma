@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Season {
+  id        Int           @id @default(autoincrement())
+  slug      String        @unique
+  name      String
+  shortName String
+  accent    String
+  months    String
+  tempMin   Int
+  tempMax   Int
+  weather   String
+  images    SeasonImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SeasonImage {
+  id         Int    @id @default(autoincrement())
+  seasonSlug String
+  path       String @unique
+  label      String
+  overlay    String
+  particle   String
+  sortOrder  Int
+
+  season Season @relation(fields: [seasonSlug], references: [slug], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([seasonSlug])
+}
+
+model DayDescription {
+  id      Int    @id @default(autoincrement())
+  date    String @unique
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
